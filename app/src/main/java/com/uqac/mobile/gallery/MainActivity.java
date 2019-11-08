@@ -11,8 +11,8 @@ import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.View;
 
+//groupe : Théo Gaërel , Joshua-Hugo Valmy
 public class MainActivity extends AppCompatActivity {
-
 
     View v;
     private static String TAG = "Gallery Application";
