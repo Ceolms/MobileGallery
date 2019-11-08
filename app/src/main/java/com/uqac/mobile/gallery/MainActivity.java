@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         }
         View gallery = new Gallery(this);
         ConstraintLayout layout = findViewById(R.id.mainLayout);
+        // this seem to fasten a little bit the loading of the bitmaps
         getWindow().setFormat(PixelFormat.RGB_888);
         layout.addView(gallery);
 

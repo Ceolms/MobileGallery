@@ -38,7 +38,9 @@ public class Gallery extends View {
         activity = (Activity) context;
         listImages = scanDeviceForImages();
         p = new Paint();
+		//zoom listener
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+		//scroll listener
         mGestureListener = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -61,18 +63,15 @@ public class Gallery extends View {
         DisplayMetrics metrics = new DisplayMetrics();
             //get display information
         activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int width=metrics.widthPixels ;
-        int height=metrics.heightPixels + 400;
+        int widthScreen=metrics.widthPixels ;
+        int heightScreen=metrics.heightPixels + 400;
 
-        Log.d(TAG,"---ONDRAW");
         p.setDither(true);
         int x = 0;
         int y = 0;
-        Log.d(TAG,"---nbImages = "+listImages.size());
 
-        int largeur = width / maxPerLine;
-        int hauteur = height / maxPerColumn;
-
+        int widthImage = widthScreen / maxPerLine;
+        int heightImage = heightScreen / maxPerColumn;
 
 
         for(int i = firstIndex ; i <= maxPerLine*maxPerColumn + firstIndex; i ++)
@@ -80,28 +79,26 @@ public class Gallery extends View {
             String s = listImages.get(i);
 
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+			//optimisation
             if(maxPerLine >5)
             bmOptions.inSampleSize = 32;
             else if(maxPerLine >3) bmOptions.inSampleSize = 16;
             else bmOptions.inSampleSize = 8;
             Bitmap bd = BitmapFactory.decodeFile(s,bmOptions);
-        //    Log.d(TAG, "---Drawning : "+s);
-
-          //  BitmapDrawable bd = new BitmapDrawable(getResources(),s);
 
             if(bd != null)
             {
-                Bitmap bdSized = Bitmap.createScaledBitmap(bd, largeur, hauteur,false);
+                Bitmap bdSized = Bitmap.createScaledBitmap(bd, widthImage, heightImage,false);
 
 
                 canvas.drawBitmap(bdSized,x,y,p);
 
-                x += largeur;
+                x += widthImage;
 
-                if(x >= width)
+                if(x >= widthImage)
                 {
                     x = 0;
-                    y += hauteur;
+                    y += heightImage;
                 }
             }
 
@@ -114,7 +111,6 @@ public class Gallery extends View {
         if(event.getAction() == MotionEvent.ACTION_UP) {
             if(isScrolling ) {
                 isScrolling  = false;
-                Log.d(TAG,"--SCROLL : " + distanceScroll);
                 setScroll();
             }
         }else
@@ -127,19 +123,22 @@ public class Gallery extends View {
         return true;
     }
 
+	//change the view  : the first index of the image to be shown is the first index of the list + number of images per line
     private void setScroll()
     {
         if(distanceScroll > 0)
         {
-            firstIndex += maxPerLine;
+            firstIndex += maxPerLine; //scroll to bottom
         }
         else
         {
             firstIndex -= maxPerLine;
-            if(firstIndex <0) firstIndex = 0;
+            if(firstIndex <0) firstIndex = 0; // scroll to top
         }
         this.invalidate();
     }
+	
+	//scan images in Gallery , DCIM and other public folders 
     private ArrayList<String> scanDeviceForImages()
     {
         Uri uri;
@@ -164,6 +163,7 @@ public class Gallery extends View {
         return listOfAllImages;
     }
 
+	//scale Listener reduce the number of image per line , so they can be in larger size
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
