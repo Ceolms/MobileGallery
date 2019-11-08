@@ -18,6 +18,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 
+//groupe : Théo Gaërel , Joshua-Hugo Valmy
 public class Gallery extends View {
 
     private static String TAG = "View Gallery";
