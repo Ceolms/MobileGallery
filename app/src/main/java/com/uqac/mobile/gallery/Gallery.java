@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -62,17 +61,17 @@ public class Gallery extends View {
     protected void onDraw(Canvas canvas)
     {
         DisplayMetrics metrics = new DisplayMetrics();
-            //get display information
+        //get display information
         activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int widthScreen=metrics.widthPixels ;
-        int heightScreen=metrics.heightPixels + 400;
+        int width=metrics.widthPixels ;
+        int height=metrics.heightPixels + 400;
 
         p.setDither(true);
         int x = 0;
         int y = 0;
 
-        int widthImage = widthScreen / maxPerLine;
-        int heightImage = heightScreen / maxPerColumn;
+        int largeur = width / maxPerLine;
+        int hauteur = height / maxPerColumn;
 
         for(int i = firstIndex ; i <= maxPerLine*maxPerColumn + firstIndex; i ++)
         {
@@ -80,9 +79,8 @@ public class Gallery extends View {
 
             //optimizations
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-			//optimisation
             if(maxPerLine >5)
-            bmOptions.inSampleSize = 32;
+                bmOptions.inSampleSize = 32;
             else if(maxPerLine >3) bmOptions.inSampleSize = 16;
             else bmOptions.inSampleSize = 8;
             Bitmap bd = BitmapFactory.decodeFile(s,bmOptions);
@@ -95,7 +93,7 @@ public class Gallery extends View {
                 if(x >= width)
                 {
                     x = 0;
-                    y += heightImage;
+                    y += hauteur;
                 }
             }
         }
@@ -118,22 +116,19 @@ public class Gallery extends View {
         return true;
     }
 
-	//change the view  : the first index of the image to be shown is the first index of the list + number of images per line
     private void setScroll()
     {
         if(distanceScroll > 0)
         {
-            firstIndex += maxPerLine; //scroll to bottom
+            firstIndex += maxPerLine;
         }
         else
         {
             firstIndex -= maxPerLine;
-            if(firstIndex <0) firstIndex = 0; // scroll to top
+            if(firstIndex <0) firstIndex = 0;
         }
         this.invalidate();
     }
-	
-	//scan images in Gallery , DCIM and other public folders 
     private ArrayList<String> scanDeviceForImages()
     {
         Uri uri;
@@ -158,20 +153,19 @@ public class Gallery extends View {
         return listOfAllImages;
     }
 
-	//scale Listener reduce the number of image per line , so they can be in larger size
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-            @Override
-            public boolean onScale(ScaleGestureDetector detector) {
-                mScaleFactor *= detector.getScaleFactor();
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            mScaleFactor *= detector.getScaleFactor();
 
-                // Don't let the object get too small or too large.
-                mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
+            // Don't let the object get too small or too large.
+            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
 
-                //Log.d(TAG,"---scaleFactor : " + mScaleFactor);
-                if(mScaleFactor > 1 && maxPerLine>1) {maxPerLine -= 1;maxPerColumn -= 1;}
-                else if(maxPerLine < 7){maxPerLine += 1;maxPerColumn += 1;}
-                invalidate();
-                return true;
-            }
+            //Log.d(TAG,"---scaleFactor : " + mScaleFactor);
+            if(mScaleFactor > 1 && maxPerLine>1) {maxPerLine -= 1;maxPerColumn -= 1;}
+            else if(maxPerLine < 7){maxPerLine += 1;maxPerColumn += 1;}
+            invalidate();
+            return true;
+        }
     }
 }
