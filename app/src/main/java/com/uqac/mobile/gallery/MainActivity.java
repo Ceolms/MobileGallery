@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
-        } else {
-            // Permission has already been granted
         }
         View gallery = new Gallery(this);
         ConstraintLayout layout = findViewById(R.id.mainLayout);
