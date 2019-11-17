@@ -11,8 +11,8 @@ import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.View;
 
+//groupe : Théo Gaërel , Joshua-Hugo Valmy
 public class MainActivity extends AppCompatActivity {
-
 
     View v;
     private static String TAG = "Gallery Application";
@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
-        } else {
-            // Permission has already been granted
         }
         View gallery = new Gallery(this);
         ConstraintLayout layout = findViewById(R.id.mainLayout);
